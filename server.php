@@ -2,7 +2,7 @@
 <?php
 date_default_timezone_set('Asia/Shanghai');
 
-$server = new swoole_websocket_server("192.168.13.201", 9502);
+$server = new swoole_websocket_server("127.0.0.1", 9502);
 
 connects(0 , 'clear');
 
