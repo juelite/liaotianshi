@@ -4,7 +4,7 @@ date_default_timezone_set('Asia/Shanghai');
 
 //解决将此程序加入服务后杀死问题
 $pid = getmypid();
-file_put_contents('/var/run/swoole.pid' , $pid);
+file_put_contents('/var/run/swoole-'.$pid.'.pid' , $pid);
 //保存当前脚本进程id
 
 
