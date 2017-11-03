@@ -25,7 +25,7 @@
 <script type="text/javascript">
     var username = 'user_'+ parseInt(1000000*Math.random());
 	$(document).ready(function(){
-        var ws = new WebSocket("ws://lts.yuuuu.wang:9502");
+        var ws = new WebSocket("ws://192.168.13.201:9502");
         ws.onopen = function()
         {
             ws.send("1~" + username + "~is coming!");
