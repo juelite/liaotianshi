@@ -16,7 +16,7 @@ $server->on('message', function($server, $frame){
     $rep = ['code' => $msg[0] , 'user' => $msg[1] , 'msg' => $msg[2] , 'time' => date('H:i:s')];
 
     $connects = connects(0,'read');
-    
+
     foreach($connects as $v) {
         $server->push($v, json_encode($rep));
     }
