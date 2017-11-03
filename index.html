@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>client</title>
+    <meta charset="utf-8">
+	<!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+	<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+<body>
+<div class="container">
+	<h2>BL 聊天室 <small>swoole扩展 实现socket聊天室</small></h2>
+	<div class="col-sm-8" id="msg_box" style="height: 500px; overflow-y: scroll; border: 1px solid #ccc; border-radius: 5px; padding: 20px;margin: auto; float: none;">
+
+
+	</div>
+	<div class="col-sm-8" style="margin: auto; float: none;padding-left:0px !important;padding-right:0px !important;padding-top: 18px;">
+		<textarea class="form-control" rows="3" id="msg" placeholder="说点什么。。。"></textarea>
+		<button class="btn btn-default" type="button" id='send' style="margin-top: 8px;">Send</button>
+	</div>
+</div>
+</body>
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery.cookie/1.4.1/jquery.cookie.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    var username = 'user_'+ parseInt(1000000*Math.random());
+	$(document).ready(function(){
+        var ws = new WebSocket("ws://192.168.13.201:9502");
+        ws.onopen = function()
+        {
+            ws.send("1~" + username + "~is coming!");
+        };
+
+        ws.onmessage = function(evt)
+        {
+            var rep = JSON.parse(evt.data);
+            var msg_box = $('#msg_box');
+
+            if(rep.code == 1){
+                var html = '<p class="text-center">'+ rep.time + ' ' + rep.user +' ' + rep.msg +'</p>';
+                msg_box.append(html);
+            }else{
+                if(rep.user == username){
+                    var html = '<p class="text-right clearfix"> <div style="text-align:right;">我:</div>  <div style="text-align:left;padding: 5px; border: 1px solid #ccc; border-radius: 5px;display:inline-block; *display:inline; *zoom:1;float: right;">' + rep.msg +'</div></p>';
+                }else{
+                    var html = '<p class="text-left clearfix"> <div style="text-align:left;">'+ rep.user +':</div>  <div style="text-align:left;padding: 5px; border: 1px solid #ccc; border-radius: 5px;display:inline-block; *display:inline; *zoom:1;float: left;">' + rep.msg +'</div></p>';
+                }
+
+                msg_box.append(html);
+            }
+            console.log(evt.data)
+
+        };
+
+        ws.onclose = function(evt)
+
+        {
+
+            console.log("WebSocketClosed!");
+
+        };
+
+        ws.onerror = function(evt)
+
+        {
+
+            console.log("WebSocketError!");
+
+        };
+
+        $('#send').click(function () {
+            sendMsg();
+        });
+
+        $('#msg').keydown(function(event){
+            if(event.which==13){
+                sendMsg();
+                event.returnValue = false;
+                event.preventDefault();
+            }
+        });
+
+        function sendMsg() {
+            var msg = $('#msg').val();
+            ws.send("2~" + username + '~' + msg);
+            $('#msg').val('')
+        }
+	});
+
+</script>
+</html>
